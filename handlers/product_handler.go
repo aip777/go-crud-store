@@ -44,3 +44,35 @@ func GetProduct(db *gorm.DB) http.HandlerFunc {
 		json.NewEncoder(w).Encode(product)
 	}
 }
+
+func UpdateProduct(db *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+		var porduct models.Product
+		result := db.First(&porduct, "id = ?", params["id"])
+		if result.Error != nil {
+			if result.Error == gorm.ErrRecordNotFound {
+				http.Error(w, "Product not found", http.StatusNotFound)
+			} else {
+				http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
+		_ = json.NewDecoder(r.Body).Decode(&porduct)
+		db.Save(&porduct)
+		json.NewEncoder(w).Encode(porduct)
+	}
+}
+
+func DeleteProduct(db *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+		var product models.Product
+		result := db.Delete(&product, "id = ?", params["id"])
+		if result.Error != nil {
+			http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(w).Encode("Product deleted successfully")
+	}
+}
