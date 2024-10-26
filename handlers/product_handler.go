@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"store/models"
+	"store/utils"
 )
 
 func CreateProduct(db *gorm.DB) http.HandlerFunc {
@@ -24,11 +25,13 @@ func CreateProduct(db *gorm.DB) http.HandlerFunc {
 func GetProducts(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var products []models.Product
-		if err := db.Find(&products).Error; err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		response, err := utils.Paginate(db, &products, r)
+		if err != nil {
+			http.Error(w, "Failed to retrieve products", http.StatusInternalServerError)
 			return
 		}
-		json.NewEncoder(w).Encode(products)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
 	}
 }
 
