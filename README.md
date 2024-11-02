@@ -13,7 +13,7 @@ curl -X POST http://localhost:8000/login -H "Content-Type: application/json" -d 
 curl -X GET http://localhost:8000/products -H "Authorization: Bearer JWT_TOKEN"
 ```
 
-## 1. Create a product (requires token)
+## Create a product (requires token)
 ```bash
 curl -X POST http://localhost:8000/products \
 -H "Authorization: Bearer JWT_TOKEN" \
