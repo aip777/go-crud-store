@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"math"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -20,14 +21,15 @@ type PaginationResponse struct {
 
 // Paginate fetches paginated data and builds a structured response
 func Paginate(db *gorm.DB, model interface{}, r *http.Request) (PaginationResponse, error) {
-	const defaultLimit = 10
+	api_limit := os.Getenv("API_LIMIT")
+	defaultLimit, _ := strconv.Atoi(api_limit)
 
 	// Parse limit and page from query parameters
 	limitStr := r.URL.Query().Get("limit")
 	pageStr := r.URL.Query().Get("page")
 
 	limit, err := strconv.Atoi(limitStr)
-	if err != nil || limit <= 0 {
+	if err != nil || limit <= 0 || limit > defaultLimit {
 		limit = defaultLimit
 	}
 
