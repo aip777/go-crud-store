@@ -1,4 +1,4 @@
-# API Documentation
+# Go CRUD Operations API Documentation
 
 ## Overview
 This project is a product management API built using Go and SQLite. It provides endpoints to create, retrieve, update, and delete products.
