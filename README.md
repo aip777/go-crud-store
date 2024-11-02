@@ -3,32 +3,44 @@
 ## Overview
 This project is a product management API built using Go and SQLite. It provides endpoints to create, retrieve, update, and delete products.
 
-## Base URL
+## Login to obtain a JWT token
+```bash
+curl -X POST http://localhost:8000/login -H "Content-Type: application/json" -d '{"username": "username", "password": "password"}'
+```
 
-## Endpoints
+## GET products (requires token)
+```bash
+curl -X GET http://localhost:8000/products -H "Authorization: Bearer JWT_TOKEN"
+```
 
-### 1. Create a Product
-
-- **Endpoint**: `/products`
-- **Method**: `POST`
-- **Description**: Create a new product.
-- **Request Body**:
-  - `name` (string, required): The name of the product.
-  - `description` (string, required): A description of the product.
-  - `price` (float, required): The price of the product.
-  - Additional optional fields: `data_created`, `last_updated`, `is_active`, `json_meta`, `type`, `uuid`.
-
-- **Example Request**:
+## 1. Create a product (requires token)
 ```bash
 curl -X POST http://localhost:8000/products \
+-H "Authorization: Bearer JWT_TOKEN" \
 -H "Content-Type: application/json" \
--d '{
-  "name": "Sample Product",
-  "description": "This is a sample product.",
-  "price": 19.99
-}'
+-d '{"name": "GO Book", "price": 19.99, "description": "Go Programming Language"}'
+```
 
+## GET a single product by ID (requires token)
+```bash
+curl -X GET http://localhost:8000/products/1 -H "Authorization: Bearer JWT_TOKEN"
+```
 
-curl -X GET http://localhost:8000/products
+## Update a product by ID (requires token)
+```bash
+curl -X PUT http://localhost:8000/products/1 \
+-H "Authorization: Bearer JWT_TOKEN" \
+-H "Content-Type: application/json" \
+-d '{"name": "GO Book 2", "price": 29.99}'
+```
 
-curl -X GET http://localhost:8000/products/1
+## Delete a product by ID (requires token)
+```bash
+curl -X DELETE http://localhost:8000/products/1 -H "Authorization: Bearer JWT_TOKEN"
+```
+
+## Docker
+```bash
+docker build -t store-app .
+docker run -p 8000:8000 store-app
+```
